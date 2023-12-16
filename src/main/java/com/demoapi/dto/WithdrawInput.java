@@ -1,6 +1,6 @@
 package com.demoapi.dto;
 
-public class DepositServiceInput {
+public class WithdrawInput {
 
     private String account;
     private Integer amount;

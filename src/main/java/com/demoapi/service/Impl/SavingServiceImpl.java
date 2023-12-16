@@ -1,9 +1,9 @@
 package com.demoapi.service.Impl;
 
-import com.demoapi.dto.DepositServiceInput;
-import com.demoapi.dto.DepositServiceOutput;
-import com.demoapi.dto.WithdrawServiceInput;
-import com.demoapi.dto.WithdrawServiceOutput;
+import com.demoapi.dto.DepositInput;
+import com.demoapi.dto.DepositOutput;
+import com.demoapi.dto.WithdrawInput;
+import com.demoapi.dto.WithdrawOutput;
 import com.demoapi.model.MockUser;
 import com.demoapi.service.SavingService;
 import org.springframework.stereotype.Component;
@@ -15,58 +15,62 @@ import java.util.Set;
 public class SavingServiceImpl implements SavingService {
 
     @Override
-    public DepositServiceOutput deposit(DepositServiceInput depositServiceInput) {
-        DepositServiceOutput depositServiceOutput = new DepositServiceOutput();
+    public DepositOutput deposit(DepositInput depositInput) {
+        DepositOutput depositOutput = new DepositOutput();
         String account = null;
         Integer balance = 0;
+        boolean succuss = false;
 
         // 0.初始化帳戶
-        HashMap<String, Integer> accountMap = getAccountMap();
+        HashMap<String, Integer> accountMap = intialAccountMap();
         // 1.檢查帳戶存在
-        account = depositServiceInput.getAccount();
+        account = depositInput.getAccount();
         boolean exist = isExist(account, accountMap);
         // 2.執行操作
         if (exist){
-            balance = accountMap.get(account) + depositServiceInput.getAmount();
+            balance = accountMap.get(account) + depositInput.getAmount();
             accountMap.put(account, balance);
+            succuss = true;
         }
         // 3.返回執行結果
-        depositServiceOutput.setSuccess(exist);
-        depositServiceOutput.setAccount(account);
-        depositServiceOutput.setBalance(balance);
-        return depositServiceOutput;
+        depositOutput.setSuccess(succuss);
+        depositOutput.setAccount(account);
+        depositOutput.setBalance(balance);
+        return depositOutput;
     }
 
 
     @Override
-    public WithdrawServiceOutput withdraw(WithdrawServiceInput withdrawServiceInput) {
-        WithdrawServiceOutput withdrawServiceOutput = new WithdrawServiceOutput();
+    public WithdrawOutput withdraw(WithdrawInput withdrawInput) {
+        WithdrawOutput withdrawOutput = new WithdrawOutput();
         String account = null;
         Integer balance = 0;
-        boolean sufficient = false;
+        boolean enough = false;
+        boolean succuss = false;
 
         // 0.初始化帳戶
-        HashMap<String, Integer> accountMap = getAccountMap();
+        HashMap<String, Integer> accountMap = intialAccountMap();
         // 1.檢查帳戶存在
-        account = withdrawServiceInput.getAccount();
+        account = withdrawInput.getAccount();
         boolean exist = isExist(account, accountMap);
         // 2.執行操作
         if (exist) {
-            sufficient = accountMap.get(account) > withdrawServiceInput.getAmount();
-            if (sufficient) {
-                balance = accountMap.get(account) - withdrawServiceInput.getAmount();
+            enough = accountMap.get(account) > withdrawInput.getAmount();
+            if (enough) {
+                balance = accountMap.get(account) - withdrawInput.getAmount();
                 accountMap.put(account, balance);
+                succuss = true;
             }
         }
         // 3.返回執行結果
-        withdrawServiceOutput.setExist(exist);
-        withdrawServiceOutput.setSuccess(sufficient);
-        withdrawServiceOutput.setAccount(account);
-        withdrawServiceOutput.setBalance(balance);
-        return withdrawServiceOutput;
+        withdrawOutput.setExist(exist);
+        withdrawOutput.setSuccess(succuss);
+        withdrawOutput.setAccount(account);
+        withdrawOutput.setBalance(balance);
+        return withdrawOutput;
     }
 
-    private HashMap<String, Integer> getAccountMap() {
+    private HashMap<String, Integer> intialAccountMap() {
         MockUser mockUser = new MockUser();
         HashMap<String, Integer> accountMap = mockUser.getAccount();
         return accountMap;

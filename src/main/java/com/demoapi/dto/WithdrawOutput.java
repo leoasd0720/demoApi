@@ -1,6 +1,6 @@
 package com.demoapi.dto;
 
-public class WithdrawServiceOutput {
+public class WithdrawOutput {
     private boolean exist;
     private boolean success;
     private String account;

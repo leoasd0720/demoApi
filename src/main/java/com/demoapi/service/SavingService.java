@@ -1,14 +1,13 @@
 package com.demoapi.service;
 
-import com.demoapi.dto.DepositServiceInput;
-import com.demoapi.dto.DepositServiceOutput;
-import com.demoapi.dto.WithdrawServiceInput;
-import com.demoapi.dto.WithdrawServiceOutput;
-import org.springframework.stereotype.Service;
+import com.demoapi.dto.DepositInput;
+import com.demoapi.dto.DepositOutput;
+import com.demoapi.dto.WithdrawInput;
+import com.demoapi.dto.WithdrawOutput;
 
 public interface SavingService {
 
-    DepositServiceOutput deposit (DepositServiceInput depositServiceInput);
+    DepositOutput deposit (DepositInput depositInput);
 
-    WithdrawServiceOutput withdraw (WithdrawServiceInput withdrawServiceInput);
+    WithdrawOutput withdraw (WithdrawInput withdrawInput);
 }

@@ -1,6 +1,6 @@
 package com.demoapi.dto;
 
-public class DepositServiceOutput {
+public class DepositOutput {
     private boolean success;
     private String account;
     private Integer balance;

@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class SavingController {
-    public static String depositSuccess = "帳號:account存款成功，餘額:";
-    public static String depositFail = "帳號:account不存在";
-    public static String withdrawSuccess = "帳號:account取款成功，餘額:";
-    public static String withdrawFailExist = "帳號:account不存在";
-    public static String withdrawFailSufficient = "帳號:account取款失敗，餘額不足";
+    public static String depositSuccess = "帳戶:account存款成功，餘額:balance元。";
+    public static String depositFail = "帳戶:account存款失敗。";
+    public static String withdrawSuccess = "帳戶:account取款成功，餘額:balance元。";
+    public static String withdrawFailExist = "帳戶:account不存在。";
+    public static String withdrawFail = "帳戶:account取款失敗，餘額不足。";
 
     @Autowired
     private SavingService savingService;
@@ -22,32 +22,36 @@ public class SavingController {
     // 存款api deposit
     @PostMapping("/deposit")
     public String deposit(@RequestBody @Valid DepositRequest depositRequest) {
-        DepositServiceInput input = new DepositServiceInput();
+        DepositInput input = new DepositInput();
+        String result = "";
         input.setAccount(depositRequest.getAccount());
         input.setAmount(depositRequest.getAmount());
-        DepositServiceOutput output = savingService.deposit(input);
+        DepositOutput output = savingService.deposit(input);
         if (output.isSuccess()) {
-            return depositSuccess.replace("account", output.getAccount())
-                    + output.getBalance();
+            result = depositSuccess.replace("account", output.getAccount())
+                                   .replace("balance", output.getBalance().toString());
         } else {
-            return depositFail.replace("account", output.getAccount());
+            result = depositFail.replace("account", output.getAccount());
         }
+        return result;
     }
 
     // 提款api withdraw
     @PostMapping("/withdraw")
     public String withdraw(@RequestBody @Valid WithdrawRequest withdrawRequest) {
-        WithdrawServiceInput input = new WithdrawServiceInput();
+        WithdrawInput input = new WithdrawInput();
+        String result = "";
         input.setAccount(withdrawRequest.getAccount());
         input.setAmount(withdrawRequest.getAmount());
-        WithdrawServiceOutput output = savingService.withdraw(input);
-        if (output.isExist() && output.isSuccess()) {
-           return withdrawSuccess.replace("account", output.getAccount())
-                   + output.getBalance();
-        } else if (!output.isExist()) {
-            return withdrawFailExist.replace("account", output.getAccount());
-        } else {
-            return withdrawFailSufficient.replace("account", output.getAccount());
+        WithdrawOutput output = savingService.withdraw(input);
+        if (!output.isExist()) {
+            result = withdrawFailExist.replace("account", output.getAccount());
+        } else if (!output.isSuccess()) {
+            result = withdrawFail.replace("account", output.getAccount());
+        }else {
+            result = withdrawSuccess.replace("account", output.getAccount())
+                                    .replace("balance", output.getBalance().toString());
         }
+        return result;
     }
 }
